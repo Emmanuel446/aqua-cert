@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Building2, GraduationCap, Calendar, Hash, Download, CheckCircle, Copy, Key, Link as LinkIcon, ExternalLink, X } from 'lucide-react';
+import { User, Building2, GraduationCap, Calendar, Hash, Download, CheckCircle, Copy, Key, Link as LinkIcon, ExternalLink, X, Info } from 'lucide-react';
 import InputField from '../../components/InputField';
 import AnimatedButton from '../../components/AnimatedButton';
 import CertificatePreview from '../../components/CertificatePreview';
@@ -255,6 +255,27 @@ const GenerateCertificate = () => {
                   day: 'numeric',
                 })}
               </p>
+            </div>
+
+            {/* ⭐ NEW: Info Text - How to Verify */}
+            <div className="bg-blue-50 border-2 border-blue-200 p-5 rounded-xl">
+              <div className="flex items-start space-x-3">
+                <div className="bg-blue-100 p-2 rounded-lg flex-shrink-0">
+                  <Info className="w-5 h-5 text-blue-600" />
+                </div>
+                <div>
+                  <h4 className="font-semibold text-blue-900 mb-2">
+                    How to Verify This Certificate
+                  </h4>
+                  <p className="text-sm text-blue-800 leading-relaxed">
+                    This certificate can be verified using either the{' '}
+                    <span className="font-bold text-blue-900">Certificate ID</span> or the{' '}
+                    <span className="font-bold text-blue-900">Proof ID</span> shown above. 
+                    Share the verification link below, or provide either ID to anyone who needs 
+                    to confirm the certificate's authenticity.
+                  </p>
+                </div>
+              </div>
             </div>
 
             {/* Button to reopen link modal */}

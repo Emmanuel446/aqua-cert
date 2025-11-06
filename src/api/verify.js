@@ -39,12 +39,8 @@ export async function verifyCertificate(certificateId) {
     }
 
     console.log('📦 Found certificate, verifying with Aqua SDK...');
-
-    // In verify.js, inside verifyCertificateById function, after getting certificate:
-
-console.log('📦 Found certificate, verifying with Aqua SDK...');
-console.log('🔍 Certificate tree object:', certificate.treeObject);
-console.log('🔍 Tree object keys:', Object.keys(certificate.treeObject));
+    console.log('🔍 Certificate tree object:', certificate.treeObject);
+    console.log('🔍 Tree object keys:', Object.keys(certificate.treeObject));
 
     // Verify using Aqua SDK
     const isValid = await aquaSDK.verifyCertificate(certificate.treeObject);
@@ -141,3 +137,6 @@ export async function verifyCustomCertificate(treeObjectInput) {
     };
   }
 }
+
+// Export alias for backward compatibility
+export const verifyCertificateById = verifyCertificate;

@@ -12,13 +12,13 @@ import {
   Calendar,
   Hash,
   Link as LinkIcon,
+  Info,
 } from 'lucide-react';
 import InputField from '../components/InputField';
 import AnimatedButton from '../components/AnimatedButton';
 import LoadingSpinner from '../components/LoadingSpinner';
-import { verifyCertificate as verifyCertificateById, verifyCustomCertificate } from '../api/verify';
+import { verifyCertificateById } from '../api/verify';
 import { format } from 'date-fns';
-// import { verifyCertificate as verifyCertificateById, verifyCustomCertificate } from '../api/verify';
 
 const VerifyCertificate = () => {
   const [searchParams] = useSearchParams();
@@ -27,7 +27,6 @@ const VerifyCertificate = () => {
   const [result, setResult] = useState(null);
   const [fromLink, setFromLink] = useState(false);
 
-  // Check for ID in URL query params on component mount
   useEffect(() => {
     const idFromUrl = searchParams.get('id');
     if (idFromUrl) {
@@ -122,6 +121,24 @@ const VerifyCertificate = () => {
               icon={Search}
               required
             />
+
+            {/* Info Text */}
+            <div className="bg-blue-50 border border-blue-200 p-4 rounded-xl">
+              <div className="flex items-start space-x-3">
+                <Info className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                <div>
+                  <p className="text-sm font-semibold text-blue-900 mb-1">
+                    How to Verify
+                  </p>
+                  <p className="text-sm text-blue-700">
+                    You can verify this certificate using either the{' '}
+                    <strong>Certificate ID</strong> (starts with CERT-) or the{' '}
+                    <strong>Proof ID</strong> (starts with PROOF-). Both are found on the 
+                    certificate document.
+                  </p>
+                </div>
+              </div>
+            </div>
 
             <AnimatedButton
               type="submit"
@@ -282,7 +299,7 @@ const VerifyCertificate = () => {
                       <span>Possible Reasons</span>
                     </p>
                     <ul className="text-sm text-red-600 space-y-2">
-                      <li>• Certificate ID not found in database</li>
+                      <li>• Certificate ID or Proof ID not found in database</li>
                       <li>• Document has been altered or tampered with</li>
                       <li>• Invalid cryptographic proof</li>
                       <li>• Certificate may be forged</li>
