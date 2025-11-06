@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
 import Navbar from './components/Navbar'
@@ -25,7 +25,7 @@ function App() {
     <Router>
       <AnimatePresence mode="wait">
         <Routes>
-          {/* Public Routes with Navbar & Footer */}
+          {/* ===== PUBLIC ROUTES WITH NAVBAR & FOOTER ===== */}
           <Route
             path="/"
             element={
@@ -38,6 +38,8 @@ function App() {
               </div>
             }
           />
+          
+          {/* PUBLIC VERIFY PAGE - ACCESSIBLE TO EVERYONE */}
           <Route
             path="/verify"
             element={
@@ -50,6 +52,7 @@ function App() {
               </div>
             }
           />
+          
           <Route
             path="/about"
             element={
@@ -63,7 +66,7 @@ function App() {
             }
           />
 
-          {/* Dashboard Routes (No Navbar/Footer) */}
+          {/* ===== DASHBOARD ROUTES (NO NAVBAR/FOOTER) ===== */}
           <Route path="/dashboard" element={<DashboardLayout />}>
             <Route index element={<Navigate to="/dashboard/generate" replace />} />
             <Route path="generate" element={<GenerateCertificate />} />
@@ -74,7 +77,7 @@ function App() {
             <Route path="support" element={<Support />} />
           </Route>
 
-          {/* 404 */}
+          {/* ===== 404 PAGE ===== */}
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AnimatePresence>
