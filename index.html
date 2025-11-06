@@ -12,6 +12,16 @@
     
     <title>AquaCert - Trust, Proven</title>
     <meta name="description" content="Professional certificate verification platform powered by cryptographic proof">
+    <script>
+      // Check if we were redirected from 404.html
+      (function() {
+        var redirect = sessionStorage.redirect;
+        delete sessionStorage.redirect;
+        if (redirect && redirect !== location.href) {
+          history.replaceState(null, null, redirect);
+        }
+      })();
+  </script>
   </head>
   <body>
     <div id="root"></div>
