@@ -71,6 +71,6 @@ Built With
 TEAM MEMBERS:
 
 - Samuel Obarine Ngekeda (Project Manager)
+- Ogba Emmanuel (Front-end Developer)
 - Oluwatoyin Boluwarin Ojumoro (Front-end Developer)
-- Emmanuel (Front-end Developer)
-- Vivian (Developer)...
+- Peters Vivian okpokipoy (Front-end Developer)
