@@ -67,3 +67,10 @@ Built With
 - Aqua JavaScript SDK (Web) — for cryptographic proof creation
 
 - Local Storage — for temporary data and proof persistence
+
+TEAM MEMBERS:
+
+- Samuel Obarine Ngekeda (Project Manager)
+- Oluwatoyin Boluwarin Ojumoro (Front-end Developer)
+- Emmanuel (Front-end Developer)
+- Vivian (Developer)...
