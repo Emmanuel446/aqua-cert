@@ -1,76 +1,95 @@
-AquaCert — Verifiable Digital Certificates
+##AquaCert — Verifiable Digital Certificates
 
-AquaCert is a web application that enables institutions and organizations to issue and verify tamper-proof digital certificates using the Aqua SDK.
-It brings trust, transparency, and authenticity to digital credentials — ensuring every certificate is cryptographically signed and traceable.
+AquaCert is a web application that enables institutions and organizations to issue and verify tamper-proof digital certificates using the real Aqua SDK.
+It brings trust, transparency, and authenticity to digital credentials — ensuring every certificate is cryptographically signed, traceable, and verifiable.
 
-AquaCert fully integrates the real Aqua JavaScript SDK (Web) to issue and validate digital certificates on-chain.
-Each certificate is signed using createGenesisRevision(), generating an authentic Aqua Tree Object as proof of origin.
-Due to current SDK constraints, verification runs structural validation client-side, but the system is architected for full cryptographic verification once verifyRevision() becomes available in the SDK.
-This project demonstrates end-to-end Aqua protocol usage — from secure issuance to shareable proof verification — inside a modern React + Tailwind interface.
+# Overview
 
-🔗 How It Works
+AquaCert is fully integrated with the live Aqua JavaScript SDK (Web) for both certificate issuance and verification.
+Each certificate is cryptographically signed via Aqua’s createGenesisRevision(), producing a verifiable Aqua Tree Object that acts as proof of authenticity.
+
+Verification now leverages the real Aqua SDK verification process, which checks both the Merkle tree integrity and stored proof hashes, ensuring that documents have not been tampered with.
+
+# How It Works
 1. User Authentication
 
 Users log in or sign up before issuing certificates.
-Each issued certificate is automatically linked to the logged-in issuer’s account, ensuring traceability and accountability.
+Each issued certificate is automatically linked to the logged-in issuer’s wallet/account — ensuring traceability and accountability.
 
 2. Upload Certificate Data
 
-The issuer fills in certificate details: name, institution, program, and date.
+The issuer enters details such as:
 
-The app structures this information into a JSON object ready for signing.
+Recipient Name
 
-3. Sign with Aqua SDK
+Institution
 
-The app calls createGenesisRevision() from the Aqua SDK (Web) to generate a Tree Object, representing a cryptographic proof of authenticity.
+Program
 
-The proof is stored locally (simulating decentralized storage).
+Date of Issue
 
-This process ensures each certificate has a unique, verifiable signature issued through Aqua’s real SDK.
+The app structures this data into a signed JSON payload ready for Aqua SDK processing.
 
-4. Generate a Shareable Verification Link
+# Sign with Aqua SDK
 
-After issuance, the system generates a shareable verification link, for example:
+AquaCert calls createGenesisRevision() from the Aqua SDK (Web) to generate:
 
-https://yourdomain.com/verify?id=PROOF-1762266043527
+A Tree Object (Merkle proof)
+
+A unique hash representing the certificate’s cryptographic fingerprint
+
+This proof is stored locally (simulating decentralized persistence) and can be shared for public verification.
+
+# Generate a Shareable Verification Link
+
+After issuance, a shareable link is created, e.g.:
+
+https://yourdomain.com/verify?id=CERT-1762730056309
 
 
-The link can be sent to employers, institutions, or anyone who needs to validate the certificate.
+Recipients (e.g., employers or institutions) can use this link to instantly verify certificate authenticity.
 
-5. Verify Certificate
+# Verify Certificate
 
-When a recipient opens the link, the Verify page auto-fills the Proof ID.
+When opened, the Verify page auto-fills the proof ID and:
 
-Clicking “Verify Certificate” runs an in-browser validation that checks the proof structure, completeness, and integrity.
+Retrieves the stored proof object
 
-While full cryptographic verification isn’t available client-side, the system ensures proof consistency and data authenticity.
+Runs Aqua SDK verification on the tree and hash
 
-⚙️ Current Limitation
+Confirms the proof’s integrity and that the file has not been altered
 
-Due to current SDK constraints, the browser build (aqua-js-sdk/web) only exposes the createGenesisRevision() method.
-This means full cryptographic verification (e.g., verifyRevision()) cannot yet be executed in the browser.
+The verification module uses verifyCertificate() logic powered by the Aqua SDK — confirming both tree validity and hash consistency.
 
-As a result:
+## Technical Architecture
+Frontend	React (JSX) + TailwindCSS
+Aqua JavaScript SDK (Web)
+Proof Storage	LocalStorage (simulated decentralized persistence)
+Certificate Logic	Uses createGenesisRevision() for signing and SDK-based validation for verification
+# SDK Notes
 
-Verification currently performs structural validation of proofs.
+Signing: Fully handled by Aqua SDK (createGenesisRevision)
 
-Full blockchain-level verification will be enabled once Aqua exposes the verification method in the web SDK or when connected to a Node backend.
+Verification:  Now powered by Aqua SDK’s real validation flow (Merkle tree + hash check)
 
-This limitation does not affect issuance authenticity — every certificate is still signed through the real Aqua SDK, producing genuine proof data.
+Backend: Currently simulated; ready for upgrade to Node-based persistence or Aqua’s hosted verifier.
 
-Built With
+# Built With
 
-- React (JSX) — for a clean, interactive frontend
+React (JSX) — Interactive, modular frontend
 
-- TailwindCSS — for responsive and minimal styling
+TailwindCSS — Responsive minimal styling
 
-- Aqua JavaScript SDK (Web) — for cryptographic proof creation
+Aqua SDK (Web) — Real cryptographic signing & verification
 
-- Local Storage — for temporary data and proof persistence
+Local Storage — Temporary proof persistence
 
-TEAM MEMBERS:
+## Team Members
 
-- Samuel Obarine Ngekeda (Project Manager)
-- Ogba Emmanuel (Front-end Developer)
-- Oluwatoyin Boluwarin Ojumoro (Front-end Developer)
-- Peters Vivian okpokipoy (Front-end Developer)
+Samuel Obarine Ngekeda — Project Manager
+
+Ogba Emmanuel — Frontend Developer
+
+Oluwatoyin Boluwarin Ojumoro — Frontend Developer
+
+Peters Vivian Okpokipoy — Frontend Developer
