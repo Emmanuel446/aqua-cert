@@ -8,7 +8,7 @@ It brings trust, transparency, and authenticity to digital credentials — ensur
 AquaCert is fully integrated with the live Aqua JavaScript SDK (Web) for both certificate issuance and verification.
 Each certificate is cryptographically signed via Aqua’s createGenesisRevision(), producing a verifiable Aqua Tree Object that acts as proof of authenticity.
 
-Verification now leverages the real Aqua SDK verification process, which checks both the Merkle tree integrity and stored proof hashes, ensuring that documents have not been tampered with.
+Verification uses the real Aqua SDK verification process, which checks both the Merkle tree integrity and stored proof hashes, ensuring that documents have not been tampered with.
 
 # How It Works
 1. User Authentication
@@ -71,8 +71,6 @@ Certificate Logic	Uses createGenesisRevision() for signing and SDK-based validat
 Signing: Fully handled by Aqua SDK (createGenesisRevision)
 
 Verification:  Now powered by Aqua SDK’s real validation flow (Merkle tree + hash check)
-
-Backend: Currently simulated; ready for upgrade to Node-based persistence or Aqua’s hosted verifier.
 
 # Built With
 
