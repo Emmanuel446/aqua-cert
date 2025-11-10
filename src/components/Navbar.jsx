@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { Shield, Menu, X, User } from 'lucide-react'
+import { Shield, Menu, X, Wallet, LogOut } from 'lucide-react'
+import { useWallet } from '../contexts/WalletContext'
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const [user, setUser] = useState(null)
   const location = useLocation()
   const navigate = useNavigate()
+  
+  // Use wallet context
+  const { address, isConnected, setShowCustomModal, disconnectWallet } = useWallet()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -18,18 +21,28 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  useEffect(() => {
-    const userData = localStorage.getItem('aquacert_user')
-    if (userData) {
-      setUser(JSON.parse(userData))
-    }
-  }, [location])
-
   const navLinks = [
     { path: '/', label: 'Home' },
     { path: '/verify', label: 'Verify' },
     { path: '/about', label: 'About' },
   ]
+
+  // Shorten wallet address for display
+  const formatAddress = (addr) => {
+    if (!addr) return ''
+    return `${addr.substring(0, 6)}...${addr.substring(addr.length - 4)}`
+  }
+
+  const handleConnectClick = () => {
+    setShowCustomModal(true)
+  }
+
+  const handleDisconnect = () => {
+    disconnectWallet()
+    if (location.pathname.startsWith('/dashboard')) {
+      navigate('/')
+    }
+  }
 
   return (
     <motion.nav
@@ -77,26 +90,37 @@ const Navbar = () => {
             ))}
           </div>
 
-          {/* CTA / User Button */}
+          {/* Wallet Button - Desktop */}
           <div className="hidden md:block">
-            {user ? (
-              <button
-                onClick={() => navigate('/dashboard')}
-                className="flex items-center space-x-2 px-4 py-2 rounded-lg border-2 border-aqua text-aqua hover:bg-aqua hover:text-white transition-colors"
-              >
-                <User className="w-5 h-5" />
-                <span className="font-medium">{user.username}</span>
-              </button>
-            ) : (
-              <Link to="/">
+            {isConnected ? (
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => navigate('/dashboard')}
+                  className="flex items-center space-x-2 px-4 py-2 rounded-lg border-2 border-aqua text-aqua hover:bg-aqua hover:text-white transition-colors"
+                >
+                  <Wallet className="w-5 h-5" />
+                  <span className="font-mono font-medium">{formatAddress(address)}</span>
+                </button>
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
-                  className="btn-primary"
+                  onClick={handleDisconnect}
+                  className="p-2 rounded-lg border-2 border-slate-200 hover:border-red-500 hover:text-red-500 transition-colors"
+                  title="Disconnect"
                 >
-                  Get Started
+                  <LogOut className="w-5 h-5" />
                 </motion.button>
-              </Link>
+              </div>
+            ) : (
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleConnectClick}
+                className="btn-primary flex items-center space-x-2"
+              >
+                <Wallet className="w-5 h-5" />
+                <span>Connect Wallet</span>
+              </motion.button>
             )}
           </div>
 
@@ -135,20 +159,42 @@ const Navbar = () => {
               {link.label}
             </Link>
           ))}
-          {user ? (
+          
+          {/* Wallet Button - Mobile */}
+          {isConnected ? (
+            <>
+              <button
+                onClick={() => {
+                  navigate('/dashboard')
+                  setIsOpen(false)
+                }}
+                className="w-full text-left px-4 py-3 rounded-lg font-medium bg-aqua/10 text-aqua flex items-center space-x-2"
+              >
+                <Wallet className="w-5 h-5" />
+                <span className="font-mono">{formatAddress(address)}</span>
+              </button>
+              <button
+                onClick={() => {
+                  handleDisconnect()
+                  setIsOpen(false)
+                }}
+                className="w-full text-left px-4 py-3 rounded-lg font-medium text-red-500 hover:bg-red-50 flex items-center space-x-2"
+              >
+                <LogOut className="w-5 h-5" />
+                <span>Disconnect</span>
+              </button>
+            </>
+          ) : (
             <button
               onClick={() => {
-                navigate('/dashboard')
+                handleConnectClick()
                 setIsOpen(false)
               }}
-              className="w-full text-left px-4 py-3 rounded-lg font-medium bg-aqua/10 text-aqua"
+              className="w-full btn-primary mt-2 flex items-center justify-center space-x-2"
             >
-              Dashboard ({user.username})
+              <Wallet className="w-5 h-5" />
+              <span>Connect Wallet</span>
             </button>
-          ) : (
-            <Link to="/" onClick={() => setIsOpen(false)}>
-              <button className="w-full btn-primary mt-2">Get Started</button>
-            </Link>
           )}
         </div>
       </motion.div>

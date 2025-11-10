@@ -1,76 +1,116 @@
-AquaCert — Verifiable Digital Certificates
+# AquaCert — Verifiable Digital Certificates
 
-AquaCert is a web application that enables institutions and organizations to issue and verify tamper-proof digital certificates using the Aqua SDK.
-It brings trust, transparency, and authenticity to digital credentials — ensuring every certificate is cryptographically signed and traceable.
+AquaCert is a web application that enables institutions and organizations to issue and verify tamper-proof digital certificates using the Aqua SDK.  
+It brings: trust, transparency, and authenticity to digital credentials — ensuring every certificate is cryptographically signed, traceable, and verifiable.
 
-AquaCert fully integrates the real Aqua JavaScript SDK (Web) to issue and validate digital certificates on-chain.
-Each certificate is signed using createGenesisRevision(), generating an authentic Aqua Tree Object as proof of origin.
-Due to current SDK constraints, verification runs structural validation client-side, but the system is architected for full cryptographic verification once verifyRevision() becomes available in the SDK.
-This project demonstrates end-to-end Aqua protocol usage — from secure issuance to shareable proof verification — inside a modern React + Tailwind interface.
+---
 
-🔗 How It Works
-1. User Authentication
+# Overview
 
-Users log in or sign up before issuing certificates.
-Each issued certificate is automatically linked to the logged-in issuer’s account, ensuring traceability and accountability.
+AquaCert is integrated with the Aqua JavaScript SDK (Web) for both certificate signing and verification, other features like notarization and witnessing were added but it was simulated
+because of the limitations we had while building with the Aqua SDK Web version.  
+Each certificate is cryptographically signed using Aqua's `createGenesisRevision()` method, generating a verifiable Aqua Tree Object that serves as proof of authenticity.
 
-2. Upload Certificate Data
+Verification runs through the real Aqua SDK's validation logic — confirming Merkle tree integrity and proof hash consistency.  
+Other elements such as wallet login and decentralized persistence are **simulated** in this build for demonstration purposes.
 
-The issuer fills in certificate details: name, institution, program, and date.
+---
 
-The app structures this information into a JSON object ready for signing.
+# How It Works
 
-3. Sign with Aqua SDK
+# 1. Upload Certificate Data  
+Issuers provide essential details:
+- Recipient Name  
+- Institution  
+- Program  
+- Date of Issue  
 
-The app calls createGenesisRevision() from the Aqua SDK (Web) to generate a Tree Object, representing a cryptographic proof of authenticity.
+This data is structured into a signed JSON payload ready for processing by the Aqua SDK.
 
-The proof is stored locally (simulating decentralized storage).
+---
 
-This process ensures each certificate has a unique, verifiable signature issued through Aqua’s real SDK.
+# 2. Sign with Aqua SDK  
+AquaCert calls `createGenesisRevision()` from the Aqua SDK (Web) to generate:
+-  A Tree Object (Merkle proof)
+-  A unique cryptographic hash** representing the certificate's fingerprint  
 
-4. Generate a Shareable Verification Link
+This proof is stored locally (simulating decentralized persistence) and forms the foundation for public verification.
 
-After issuance, the system generates a shareable verification link, for example:
+---
 
-https://yourdomain.com/verify?id=PROOF-1762266043527
+# 3. Generate a Shareable Verification Link  
+After signing, a shareable verification link is automatically created — for example:
 
+http://localhost:3000/verify?id=PROOF-1762804815496
 
-The link can be sent to employers, institutions, or anyone who needs to validate the certificate.
+Recipients (such as employers or institutions) can use this link to **instantly verify** the certificate's authenticity.
 
-5. Verify Certificate
+---
 
-When a recipient opens the link, the Verify page auto-fills the Proof ID.
+### 4. Verify Certificate  
+The Verify Page auto-fills the certificate proof ID and:
+- Retrieves the stored proof object  
+- Extracts the Aqua-generated cryptographic hash from the Merkle tree
+- Validates the tree structure integrity
+- Compares the stored hash against the extracted hash to confirm no tampering has occurred
 
-Clicking “Verify Certificate” runs an in-browser validation that checks the proof structure, completeness, and integrity.
+**Note on Browser SDK Limitations:**  
+The Aqua JavaScript SDK (Web) browser version currently provides **only the `createGenesisRevision()` method** for signing.  
+Verification methods such as `verifyRevision()`, `verifyProof()`, or similar are **not available in the browser SDK**.
 
-While full cryptographic verification isn’t available client-side, the system ensures proof consistency and data authenticity.
+As a result, our verification process:
+- ✅ Uses **real Aqua SDK cryptographic data** (Merkle tree hash generated by `createGenesisRevision()`)
+- ✅ Performs **hash-based validation** by comparing the Aqua-generated hash
+- ✅ Validates **tree structure integrity** to detect tampering
+- ⚠️ Does **not use built-in SDK verification methods** (unavailable in browser version)
 
-⚙️ Current Limitation
+**Full cryptographic verification** with methods like `verifyRevision()` requires the **Aqua Node SDK** (server-side implementation), which is planned for future production deployment.
 
-Due to current SDK constraints, the browser build (aqua-js-sdk/web) only exposes the createGenesisRevision() method.
-This means full cryptographic verification (e.g., verifyRevision()) cannot yet be executed in the browser.
+This is a **limitation of the browser SDK**, not our implementation. We use the best verification approach available within browser constraints.
 
-As a result:
+---
 
-Verification currently performs structural validation of proofs.
+# Technical Architecture
 
-Full blockchain-level verification will be enabled once Aqua exposes the verification method in the web SDK or when connected to a Node backend.
+# Layer | Description |
 
-This limitation does not affect issuance authenticity — every certificate is still signed through the real Aqua SDK, producing genuine proof data.
+- Frontend React (JSX) + TailwindCSS
+- SDK Integration Aqua JavaScript SDK (Web)
+- Proof Storage LocalStorage (simulated decentralized persistence)
+- Signing Logic `createGenesisRevision()` for cryptographic signing
+- Verification Logic Hash-based validation using Aqua SDK cryptographic data
 
-Built With
+---
 
-- React (JSX) — for a clean, interactive frontend
+# SDK Feature Usage
 
-- TailwindCSS — for responsive and minimal styling
+Feature Description 
 
-- Aqua JavaScript SDK (Web) — for cryptographic proof creation
+- Signing Active | Performed via Aqua SDK `createGenesisRevision()`
+- Verification Active (Limited) | Hash-based validation using Aqua-generated proofs (browser SDK has no built-in verification methods)
+- Notarization Simulated | Demonstrated conceptually within UI
+- Witnessing Simulated | Reserved for future decentralized extensions
 
-- Local Storage — for temporary data and proof persistence
+**Browser SDK Note:** The Aqua JavaScript SDK (Web) currently exposes only signing functionality (`createGenesisRevision`). Verification methods are not available in the browser version and require the Aqua Node SDK for server-side implementation.
 
-TEAM MEMBERS:
+---
 
-- Samuel Obarine Ngekeda (Project Manager)
-- Ogba Emmanuel (Front-end Developer)
-- Oluwatoyin Boluwarin Ojumoro (Front-end Developer)
-- Peters Vivian okpokipoy (Front-end Developer)
+# Built With
+- React (JSX) — Modular and dynamic user interface  
+- TailwindCSS — Clean, responsive styling  
+- Aqua SDK (Web) — Cryptographic signing and verification  
+- LocalStorage — Temporary proof persistence  
+
+---
+
+# Team Members
+- Samuel Obarine Ngekeda — Project Manager  
+- Ogba Emmanuel — Frontend Developer  
+- Oluwatoyin Boluwarin Ojumoro — Frontend Developer  
+- Peters Vivian Okpokipoy — Frontend Developer  
+
+---
+
+# Summary
+AquaCert demonstrates how digital certificates can be signed and verified entirely on-chain logic level using the Aqua SDK.  
+While wallet connections and blockchain persistence are simulated, core cryptographic verification is real — proving how Aqua can power the next generation of trustless academic and institutional certifications.

@@ -1,26 +1,18 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { motion } from 'framer-motion'
 import { useNavigate } from 'react-router-dom'
-import HeroSection from '../components/HeroSection'
-import AuthModal from '../components/AuthModal'
 import { Shield, Zap, Lock, CheckCircle, Award, FileCheck } from 'lucide-react'
+import { useWallet } from '../contexts/WalletContext'
 
 const Home = () => {
-  const [showAuthModal, setShowAuthModal] = useState(false)
   const navigate = useNavigate()
-
-  const handleAuthSuccess = (userData) => {
-    setShowAuthModal(false)
-    navigate('/dashboard/generate')
-  }
+  const { isConnected, setShowCustomModal } = useWallet()
 
   const handleGenerateClick = () => {
-    // Check if user is already logged in
-    const user = localStorage.getItem('aquacert_user')
-    if (user) {
+    if (isConnected) {
       navigate('/dashboard/generate')
     } else {
-      setShowAuthModal(true)
+      setShowCustomModal(true)
     }
   }
 
@@ -70,7 +62,7 @@ const Home = () => {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
     >
-      {/* Hero with modified Generate button */}
+      {/* Hero Section */}
       <div className="relative overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-50 pt-32 pb-20">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <motion.div
@@ -135,7 +127,7 @@ const Home = () => {
                 onClick={handleGenerateClick}
                 className="btn-primary text-lg px-8 py-4"
               >
-                Generate Certificate
+                {isConnected ? 'Generate Certificate' : 'Connect Wallet'}
               </motion.button>
               <motion.button
                 whileHover={{ scale: 1.05 }}
@@ -196,7 +188,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* About Section - KEPT ON HOMEPAGE */}
+      {/* About Section */}
       <section id="about" className="py-20 bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
@@ -276,7 +268,7 @@ const Home = () => {
               onClick={handleGenerateClick}
               className="bg-white text-aqua font-semibold px-8 py-4 rounded-xl hover:bg-blue-50 transition-colors"
             >
-              Generate Your First Certificate
+              {isConnected ? 'Generate Your First Certificate' : 'Connect Wallet to Start'}
             </motion.button>
             <motion.button
               whileHover={{ scale: 1.05 }}
@@ -288,13 +280,6 @@ const Home = () => {
           </motion.div>
         </div>
       </section>
-
-      {/* Auth Modal */}
-      <AuthModal
-        isOpen={showAuthModal}
-        onClose={() => setShowAuthModal(false)}
-        onSuccess={handleAuthSuccess}
-      />
     </motion.div>
   )
 }

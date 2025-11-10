@@ -2,17 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useSearchParams } from 'react-router-dom';
 import {
-  Search,
-  CheckCircle,
-  XCircle,
-  Shield,
-  AlertTriangle,
-  User,
-  Building2,
-  Calendar,
-  Hash,
-  Link as LinkIcon,
-  Info,
+  Search, CheckCircle, XCircle, Shield, AlertTriangle, User, Building2,
+  Calendar, Hash, Link as LinkIcon, Info, Award
 } from 'lucide-react';
 import InputField from '../components/InputField';
 import AnimatedButton from '../components/AnimatedButton';
@@ -79,7 +70,7 @@ const VerifyCertificate = () => {
             transition={{ delay: 0.1 }}
             className="text-xl text-slate-600"
           >
-            Validate certificate authenticity using Aqua blockchain
+            Validate certificate authenticity instantly
           </motion.p>
         </div>
 
@@ -122,7 +113,6 @@ const VerifyCertificate = () => {
               required
             />
 
-            {/* Info Text */}
             <div className="bg-blue-50 border border-blue-200 p-4 rounded-xl">
               <div className="flex items-start space-x-3">
                 <Info className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
@@ -131,10 +121,8 @@ const VerifyCertificate = () => {
                     How to Verify
                   </p>
                   <p className="text-sm text-blue-700">
-                    You can verify this certificate using either the{' '}
-                    <strong>Certificate ID</strong> (starts with CERT-) or the{' '}
-                    <strong>Proof ID</strong> (starts with PROOF-). Both are found on the 
-                    certificate document.
+                    Enter the Certificate ID or Proof ID found on the certificate document 
+                    to verify its authenticity.
                   </p>
                 </div>
               </div>
@@ -153,7 +141,7 @@ const VerifyCertificate = () => {
         </motion.div>
 
         {/* Loading State */}
-        {loading && <LoadingSpinner message="Verifying with Aqua SDK..." />}
+        {loading && <LoadingSpinner message="Verifying certificate authenticity..." />}
 
         {/* Results */}
         <AnimatePresence>
@@ -178,15 +166,20 @@ const VerifyCertificate = () => {
                   </div>
 
                   <h2 className="font-display font-bold text-3xl text-center text-slate-900 mb-2">
-                    Certificate Verified ✅
+                    Authentic Certificate
                   </h2>
                   <p className="text-center text-slate-600 mb-8">
-                    This certificate has been cryptographically verified using Aqua SDK
+                    This is a valid and verified certificate
                   </p>
 
                   {/* Certificate Details */}
                   {result.data && (
                     <div className="bg-slate-50 p-6 rounded-xl space-y-4 mb-6">
+                      <h3 className="font-semibold text-lg text-slate-900 mb-4 flex items-center space-x-2">
+                        <Award className="w-5 h-5 text-aqua" />
+                        <span>Certificate Information</span>
+                      </h3>
+
                       <div className="grid md:grid-cols-2 gap-4">
                         <div>
                           <p className="text-sm text-slate-500 mb-1 flex items-center space-x-1">
@@ -226,9 +219,9 @@ const VerifyCertificate = () => {
                         </div>
 
                         {result.data.issuedBy && (
-                          <div>
+                          <div className="md:col-span-2">
                             <p className="text-sm text-slate-500 mb-1">Issued By</p>
-                            <p className="font-semibold text-slate-900">
+                            <p className="font-mono text-sm text-slate-900">
                               {result.data.issuedBy}
                             </p>
                           </div>
@@ -245,30 +238,41 @@ const VerifyCertificate = () => {
                       <div className="pt-4 border-t border-slate-200">
                         <p className="text-sm text-slate-500 mb-1 flex items-center space-x-1">
                           <Hash className="w-4 h-4" />
-                          <span>Proof ID</span>
+                          <span>Verification ID</span>
                         </p>
                         <p className="font-mono text-sm text-aqua font-semibold break-all">
                           {result.proofId}
                         </p>
                       </div>
+                    </div>
+                  )}
 
-                      {result.proofHash && result.proofHash !== 'N/A' && (
-                        <div className="pt-4 border-t border-slate-200">
-                          <p className="text-sm text-slate-500 mb-1">Cryptographic Hash</p>
-                          <p className="font-mono text-xs text-slate-700 break-all">
-                            {result.proofHash}
-                          </p>
+                  {/* Simple Notarization Info - Only if available */}
+                  {result.verification?.notarization?.valid && (
+                    <div className="bg-aqua/5 border border-aqua/20 p-4 rounded-xl mb-6">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          <Shield className="w-5 h-5 text-aqua" />
+                          <span className="text-sm font-semibold text-slate-900">
+                            Blockchain Verified
+                          </span>
                         </div>
-                      )}
+                        <span className="text-xs text-slate-600">
+                          {format(new Date(result.verification.notarization.timestamp), 'MMM dd, yyyy')}
+                        </span>
+                      </div>
                     </div>
                   )}
 
                   {/* Verification Timestamp */}
                   <div className="bg-green-50 border border-green-200 p-4 rounded-xl">
-                    <div className="flex items-center space-x-2 text-green-700">
-                      <Shield className="w-5 h-5" />
-                      <span className="text-sm">
-                        Verified at: {format(new Date(result.verifiedAt), 'PPpp')}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2 text-green-700">
+                        <Shield className="w-5 h-5" />
+                        <span className="text-sm font-semibold">Verified Successfully</span>
+                      </div>
+                      <span className="text-sm text-green-600">
+                        {format(new Date(result.verifiedAt), 'MMM dd, yyyy h:mm a')}
                       </span>
                     </div>
                   </div>
@@ -287,7 +291,7 @@ const VerifyCertificate = () => {
                   </div>
 
                   <h2 className="font-display font-bold text-3xl text-center text-slate-900 mb-2">
-                    {result.error || 'Verification Failed'} ❌
+                    {result.error === 'Certificate not found' ? 'Certificate Not Found' : 'Invalid Certificate'}
                   </h2>
                   <p className="text-center text-slate-600 mb-8">
                     {result.details || 'This certificate could not be verified.'}
@@ -299,10 +303,10 @@ const VerifyCertificate = () => {
                       <span>Possible Reasons</span>
                     </p>
                     <ul className="text-sm text-red-600 space-y-2">
-                      <li>• Certificate ID or Proof ID not found in database</li>
-                      <li>• Document has been altered or tampered with</li>
-                      <li>• Invalid cryptographic proof</li>
-                      <li>• Certificate may be forged</li>
+                      <li>• Certificate ID or Proof ID not found in our system</li>
+                      <li>• Certificate may have been altered or tampered with</li>
+                      <li>• Invalid or expired verification code</li>
+                      <li>• Certificate may not be issued by an authorized institution</li>
                     </ul>
                   </div>
                 </div>

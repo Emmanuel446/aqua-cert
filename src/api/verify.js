@@ -5,6 +5,8 @@
 
 import aquaSDK from '../lib/aqua';
 import { getCertificate } from './issue';
+import { verifyNotarization } from './notarize';
+import { verifyWitness } from './witness';
 
 /**
  * Verify certificate by ID
@@ -42,16 +44,33 @@ export async function verifyCertificate(certificateId) {
     console.log('🔍 Certificate tree object:', certificate.treeObject);
     console.log('🔍 Tree object keys:', Object.keys(certificate.treeObject));
 
-    // Verify using Aqua SDK
-    const isValid = await aquaSDK.verifyCertificate(certificate.treeObject);
+    // Verify with hash comparison
+    const verificationResult = await aquaSDK.verifyCertificate(
+      certificate.treeObject,
+      certificate.hash  // Compare against stored hash
+    );
 
-    if (!isValid) {
-      console.error('❌ Aqua verification failed');
+    if (!verificationResult.valid) {
+      console.error('❌ Aqua verification failed:', verificationResult.reason);
       return {
         valid: false,
         error: 'Invalid certificate',
-        details: 'Aqua SDK verification failed. Document may be tampered with.',
+        details: verificationResult.reason || 'Aqua SDK verification failed. Document may be tampered with.',
       };
+    }
+
+    // Verify notarization if present
+    let notarizationVerification = null;
+    if (certificate.notarization) {
+      console.log('📝 Verifying notarization...');
+      notarizationVerification = verifyNotarization(certificate.notarization);
+    }
+
+    // Verify witness if present
+    let witnessVerification = null;
+    if (certificate.witness) {
+      console.log('👁️ Verifying witness attestations...');
+      witnessVerification = verifyWitness(certificate.witness);
     }
 
     console.log('✅ Certificate verified successfully');
@@ -60,6 +79,7 @@ export async function verifyCertificate(certificateId) {
       valid: true,
       proofId: certificate.proofId,
       proofHash: certificate.hash,
+      fileHash: certificate.fileHash,
       data: {
         certificateId: certificate.certificateId,
         recipientName: certificate.recipientName,
@@ -71,6 +91,23 @@ export async function verifyCertificate(certificateId) {
       metadata: {
         signedAt: certificate.signedAt,
         createdAt: certificate.createdAt,
+      },
+      verification: {
+        extractedHash: verificationResult.hash,
+        storedHash: certificate.hash,
+        hashMatch: verificationResult.hash === certificate.hash,
+        verificationType: verificationResult.verificationType,
+        
+        // Notarization verification
+        notarization: notarizationVerification,
+        isNotarized: notarizationVerification?.valid || false,
+        
+        // Witness verification
+        witness: witnessVerification,
+        isWitnessed: witnessVerification?.valid || false,
+        
+        // Overall completion
+        isComplete: certificate.verification?.complete || false,
       },
       verifiedAt: new Date().toISOString(),
     };
@@ -112,18 +149,19 @@ export async function verifyCustomCertificate(treeObjectInput) {
     }
 
     // Verify using Aqua SDK
-    const isValid = await aquaSDK.verifyCertificate(treeObject);
+    const verificationResult = await aquaSDK.verifyCertificate(treeObject);
 
-    if (!isValid) {
+    if (!verificationResult.valid) {
       return {
         valid: false,
         error: 'Invalid tree object',
-        details: 'Aqua SDK verification failed for this tree object.',
+        details: verificationResult.reason || 'Aqua SDK verification failed for this tree object.',
       };
     }
 
     return {
       valid: true,
+      hash: verificationResult.hash,
       verifiedAt: new Date().toISOString(),
       message: '✅ Tree object verified successfully. Document is authentic.',
     };

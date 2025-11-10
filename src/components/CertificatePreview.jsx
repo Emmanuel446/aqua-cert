@@ -1,10 +1,10 @@
-import React from 'react'
-import { motion } from 'framer-motion'
-import { QRCodeSVG } from 'qrcode.react'
-import { Shield, Award } from 'lucide-react'
-import { format } from 'date-fns'
+import React from 'react';
+import { motion } from 'framer-motion';
+import { QRCodeSVG } from 'qrcode.react';
+import { Shield, Award, CheckCircle, FileCheck, Eye } from 'lucide-react';
+import { format } from 'date-fns';
 
-const CertificatePreview = ({ data, proofId }) => {
+const CertificatePreview = ({ data, proofId, verification, notarization, witness }) => {
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.9 }}
@@ -20,6 +20,30 @@ const CertificatePreview = ({ data, proofId }) => {
         <div className="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
           <Shield className="w-96 h-96" />
         </div>
+
+        {/* Verification Badges */}
+        {verification && (
+          <div className="absolute top-4 right-4 flex flex-col gap-2">
+            {verification.signed && (
+              <div className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-semibold flex items-center space-x-1">
+                <Shield className="w-3 h-3" />
+                <span>Signed</span>
+              </div>
+            )}
+            {verification.notarized && (
+              <div className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-semibold flex items-center space-x-1">
+                <FileCheck className="w-3 h-3" />
+                <span>Notarized</span>
+              </div>
+            )}
+            {verification.witnessed && (
+              <div className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold flex items-center space-x-1">
+                <Eye className="w-3 h-3" />
+                <span>Witnessed</span>
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Header */}
         <div className="text-center mb-8 relative">
@@ -97,9 +121,50 @@ const CertificatePreview = ({ data, proofId }) => {
             </p>
           </div>
         )}
+
+        {/* Notarization Badge */}
+        {notarization && (
+          <div className="mt-4 p-4 bg-purple-50 rounded-xl border border-purple-200">
+            <div className="flex items-center space-x-2 mb-2">
+              <FileCheck className="w-4 h-4 text-purple-600" />
+              <p className="text-xs font-semibold text-purple-900">Blockchain Notarization</p>
+            </div>
+            <p className="text-xs text-purple-700">
+              Notary ID: <span className="font-mono">{notarization.notaryId}</span>
+            </p>
+            <p className="text-xs text-purple-700">
+              Block: #{notarization.blockchainReceipt.blockNumber} on {notarization.notary.network}
+            </p>
+          </div>
+        )}
+
+        {/* Witness Badge */}
+        {witness && (
+          <div className="mt-4 p-4 bg-green-50 rounded-xl border border-green-200">
+            <div className="flex items-center space-x-2 mb-2">
+              <Eye className="w-4 h-4 text-green-600" />
+              <p className="text-xs font-semibold text-green-900">Independent Witness Verification</p>
+            </div>
+            <p className="text-xs text-green-700">
+              {witness.consensus.approved}/{witness.consensus.total} witnesses approved • {witness.consensus.confidence}% confidence
+            </p>
+          </div>
+        )}
+
+        {/* Security Footer */}
+        {verification?.complete && (
+          <div className="mt-4 p-3 bg-gradient-to-r from-green-50 to-aqua/10 rounded-xl border border-green-200">
+            <div className="flex items-center justify-center space-x-2">
+              <CheckCircle className="w-4 h-4 text-green-600" />
+              <p className="text-xs font-semibold text-green-900">
+                Triple-Layer Verified: Signed • Notarized • Witnessed
+              </p>
+            </div>
+          </div>
+        )}
       </div>
     </motion.div>
-  )
-}
+  );
+};
 
-export default CertificatePreview
+export default CertificatePreview;
