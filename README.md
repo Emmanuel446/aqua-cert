@@ -14,6 +14,9 @@ Each certificate is cryptographically signed using Aqua's `createGenesisRevision
 Verification runs through the real Aqua SDK's validation logic — confirming Merkle tree integrity and proof hash consistency.  
 Other elements such as wallet login and decentralized persistence are **simulated** in this build for demonstration purposes.
 
+# Link to Video
+- https://drive.google.com/file/d/1-OJewJE8ajP4L_2CrOhPbl4aNIVkTqjo/view?usp=sharing
+
 ---
 
 # How It Works
