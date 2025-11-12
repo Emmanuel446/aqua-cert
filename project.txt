@@ -1,0 +1,463 @@
+# AquaCert Project Documentation
+**Generated on:** November 12, 2025  
+**Project Status:** Frontend Demo with Real Aqua SDK Integration
+
+---
+
+## High-Level Overview
+
+AquaCert is a **frontend-only React application** that demonstrates a complete verifiable digital certificate system using the Aqua SDK for cryptographic proof generation. While positioned as a web app for issuing and verifying certificates with cryptographic proofs and wallet connectivity, this is currently a sophisticated frontend demonstration rather than a production system.
+
+**Core Architecture:**
+- **Frontend:** React 19 + Vite (Frontend-only, no backend server)
+- **SDK Integration:** Aqua JavaScript SDK (`aqua-js-sdk@3.2.1-45`)
+- **Storage:** localStorage (simulates database persistence)
+- **Wallet Integration:** Wagmi with MetaMask/Trust Wallet support (Sepolia testnet)
+- **Styling:** TailwindCSS with custom Aqua branding
+
+**Key Capabilities Demonstrated:**
+- ✅ Real cryptographic signing via Aqua SDK `createGenesisRevision()`
+- ✅ Professional certificate generation and verification UI
+- ✅ Wallet connection interface (MetaMask, Trust Wallet, Binance Wallet)
+- ✅ Mock notarization and witness networks
+- ⚠️ Verification limited to structural validation (browser SDK limitation)
+- ⚠️ No real backend or blockchain integration
+
+---
+
+## Folder & File Structure Summary
+
+### **Root Configuration Files**
+- `package.json` - Project dependencies and scripts
+- `vite.config.js` - Vite build configuration
+- `tailwind.config.js` - Custom TailwindCSS styling with Aqua branding
+- `.env` - Environment variables (currently only `VITE_APP_NAME=AquaCert`)
+
+### **src/ (Source Code)**
+```
+src/
+├── api/                 # Certificate management APIs
+├── components/          # Reusable UI components
+├── config/             # Wallet and app configuration
+├── contexts/           # React contexts (Wallet management)
+├── hooks/              # Custom React hooks
+├── lib/                # Core SDK integrations
+├── pages/              # Application pages
+├── utils/              # Utility functions
+├── App.jsx             # Main application component
+├── main.jsx            # Application entry point
+└── index.css           # Global styles
+```
+
+---
+
+## Key File Analysis
+
+### **Core Application Files**
+
+#### `/src/App.jsx`
+→ **Main application router and provider setup**
+- Configures React Query client for data management
+- Sets up WagmiProvider for wallet connectivity
+- Defines routing structure (public pages vs dashboard pages)
+- Initializes mock database on app start
+- Wraps entire app with WalletProvider context
+
+#### `/src/main.jsx`
+→ **Application entry point**
+- Standard React 18+ entry with createRoot
+- Loads main App component and global styles
+
+#### `/src/lib/aqua.js`
+→ **Aqua SDK wrapper and certificate operations**
+- **Real Aqua SDK integration** using `aqua-js-sdk/web`
+- `signCertificate()`: Uses `createGenesisRevision()` for cryptographic signing
+- `verifyCertificate()`: Structural validation and hash extraction
+- `extractHash()`: Multiple fallback strategies for extracting Aqua tree hashes
+- **Browser SDK Limitation Note**: No access to `verifyRevision()` or `verifyProof()` methods
+- Provides comprehensive tree object analysis and validation
+
+### **API Layer**
+
+#### `/src/api/issue.js`
+→ **Certificate issuance and management**
+- `issueCertificate()`: Generates certificates with form data
+- `issueUploadedCertificate()`: Handles file uploads (PDF/images)
+- Integrates with Aqua SDK for signing, notarization, and witnessing
+- Saves certificates to localStorage with proof data
+- Supports wallet-based authentication simulation
+
+#### `/src/api/verify.js`
+→ **Certificate verification system**
+- `verifyCertificate()`: Main verification by Certificate/Proof ID
+- `verifyCustomCertificate()`: Verification of raw tree objects
+- Uses Aqua SDK for hash extraction and validation
+- Supports both generated and uploaded certificates
+- Returns detailed verification status and metadata
+
+#### `/src/api/notarize.js`
+→ **Mock blockchain notarization service**
+- Simulates blockchain timestamping with Sepolia network
+- Generates fake transaction hashes, block numbers, explorer URLs
+- Creates notary service credentials and signatures
+- **Production Note**: Requires Aqua Node SDK for real notarization
+
+#### `/src/api/witness.js`
+→ **Mock witness attestation network**
+- Simulates third-party validator network
+- Creates consensus-based approval system
+- Generates witness signatures and reputation scores
+- **Production Note**: Requires actual witness network integration
+
+### **Wallet Integration**
+
+#### `/src/config/wagmi.js`
+→ **Wallet connection configuration**
+- Simplified Wagmi setup with injected connector
+- Supports MetaMask, Trust Wallet, Binance Wallet
+- Configured for Sepolia testnet only
+- No WalletConnect project ID required
+
+#### `/src/contexts/WalletContext.jsx`
+→ **Wallet state management**
+- Manages wallet connection state and lifecycle
+- Handles Sepolia network switching
+- Persists connection data to localStorage
+- Provides wallet connection/disconnection functions
+
+#### `/src/components/WalletConnectModal.jsx`
+→ **Wallet connection modal UI**
+- **UI Status**: Design implemented, functionality limited
+- Shows wallet selection (currently only MetaMask)
+- Displays connection errors and status
+- Currently uses manual MetaMask API calls vs full Wagmi integration
+
+### **Page Components**
+
+#### `/src/pages/Home.jsx`
+→ **Landing page with certificate features**
+- Hero section with AquaCert branding and feature highlights
+- Statistics section (mock data)
+- Feature showcase with animated icons
+- Call-to-action buttons (Connect Wallet → Generate → Verify)
+- **UI Update**: Buttons changed from "Get Certificate" to "Connect Wallet"
+
+#### `/src/pages/VerifyCertificate.jsx`
+→ **Certificate verification interface**
+- Handles both URL-based verification (from links) and manual verification
+- Displays verification results with detailed certificate information
+- Supports both generated certificates and uploaded files
+- Shows technical verification details in collapsible sections
+- Professional verification status reporting
+
+#### `/src/pages/Dashboard/GenerateCertificate.jsx`
+→ **Certificate generation form**
+- Multi-step certificate creation process (Signing → Notarizing → Witnessing)
+- Form validation and data collection
+- Progress tracking with animated steps
+- Post-generation certificate information display
+- PDF download functionality integration
+
+#### `/src/pages/Dashboard/UploadCertificate.jsx`
+→ **File upload and signing interface**
+- Drag-and-drop file upload zone
+- Support for PDF, JPG, PNG files (5MB max)
+- File preview functionality
+- Same three-step process as generated certificates
+- Verification link generation and sharing
+
+### **UI Components**
+
+#### `/src/components/Navbar.jsx`
+→ **Main navigation component**
+- Responsive navigation with mobile menu
+- Wallet connection status display
+- Navigation highlighting and smooth animations
+- Disconnect functionality with redirect handling
+
+#### `/src/components/DashboardLayout.jsx`
+→ **Dashboard page wrapper**
+- Wallet authentication gate (redirects if not connected)
+- Sidebar navigation with collapsible menu
+- Mobile-responsive layout
+- Connected wallet address display
+
+#### `/src/components/FileUploadZone.jsx`
+→ **Drag-and-drop file upload component**
+- Visual drag-and-drop interface
+- File type and size validation
+- Image preview generation
+- Support for PDF and image files
+
+### **Utility Functions**
+
+#### `/src/utils/mockDB.js`
+→ **Mock database initialization**
+- Sample certificate data for demonstration
+- localStorage initialization with sample certificates
+- Provides baseline data for testing verification
+
+#### `/src/utils/generatePDF.js`
+→ **PDF certificate generation**
+- Converts certificates to downloadable PDF format
+- Includes verification QR codes and metadata
+- Professional certificate layout and styling
+
+---
+
+## Backend Summary
+
+**Important Discovery: This is a frontend-only application with no backend server.**
+
+**Current "Backend" Implementation:**
+- **localStorage-based storage** for all certificate data
+- **Mock API services** that simulate real backend operations
+- **Simulated blockchain operations** (notarization, witnessing)
+- **Frontend-only Aqua SDK** integration (browser version limitations)
+
+**Real SDK Usage:**
+- ✅ `createGenesisRevision()` for certificate signing
+- ✅ Tree object generation and hash extraction
+- ⚠️ No access to verification methods (browser SDK limitation)
+- ⚠️ Structural validation instead of cryptographic verification
+
+**Mock Services:**
+- Notarization service simulates blockchain transactions
+- Witness network provides consensus-based approval
+- All data persists in browser localStorage
+- No real database or server-side operations
+
+---
+
+## Frontend Summary
+
+### **React Component Hierarchy**
+```
+App.jsx
+├── WalletProvider (Context)
+├── WalletConnectModal
+├── Router
+│   ├── Public Routes (with Navbar)
+│   │   ├── Home.jsx
+│   │   ├── VerifyCertificate.jsx
+│   │   └── About.jsx
+│   └── Dashboard Routes (Protected)
+│       ├── DashboardLayout.jsx
+│       │   ├── Sidebar.jsx
+│       │   └── Pages
+│       │       ├── GenerateCertificate.jsx
+│       │       ├── UploadCertificate.jsx
+│       │       ├── ViewCertificates.jsx
+│       │       ├── Profile.jsx
+│       │       ├── History.jsx
+│       │       └── Settings.jsx
+```
+
+### **State Management**
+- **React Context** for wallet state
+- **localStorage** for certificate persistence
+- **React Query** for data fetching state
+- **Component local state** for UI interactions
+
+### **Recent UI Changes**
+- **Button Updates**: Home page buttons changed from "Get Certificate" and "Get Started" to "Connect Wallet"
+- **Wallet Modal**: Clean, professional design with gradient backgrounds
+- **Verification Results**: Enhanced with technical details and certificate previews
+- **Mobile Responsiveness**: Fully responsive across all screen sizes
+- **Professional Styling**: Aqua-themed branding with smooth animations
+
+### **Wallet Connection Implementation**
+- **Status**: UI implemented, backend integration partial
+- **Supported Wallets**: MetaMask, Trust Wallet, Binance Wallet (via injected connector)
+- **Network**: Sepolia testnet configured
+- **Authentication**: Simulated through localStorage wallet data
+- **Limitations**: No real blockchain transactions or signatures
+
+---
+
+## Current Limitations & In-Progress Work
+
+### **Wallet Connection Issues**
+- ❌ **Connection Flow**: Modal UI works but real wallet integration incomplete
+- ❌ **Network Switching**: Sepolia switching not fully functional
+- ❌ **Transaction Signing**: No real blockchain transaction capabilities
+- ❌ **Wallet Persistence**: Limited session management
+
+### **Verification Limitations**
+- ⚠️ **Structural vs Cryptographic**: Uses tree structure validation, not full Aqua SDK verification
+- ⚠️ **Browser SDK Constraints**: Cannot access `verifyRevision()` or `verifyProof()` methods
+- ⚠️ **Hash Comparison**: Basic hash matching vs full cryptographic verification
+- ⚠️ **Proof Validation**: Limited to structural integrity checks
+
+### **Storage & Persistence**
+- ⚠️ **localStorage Only**: No real database integration
+- ⚠️ **No Cloud Sync**: All data local to browser session
+- ⚠️ **Limited Scalability**: localStorage has size and performance limitations
+- ⚠️ **No User Management**: No real user accounts or authentication
+
+### **Blockchain Integration**
+- ⚠️ **Mock Blockchain**: All blockchain operations are simulated
+- ⚠️ **No Real Transactions**: Notarization and witnessing are fake
+- ⚠️ **No Smart Contracts**: No actual blockchain deployment
+- ⚠️ **Explorer Links**: All blockchain explorer URLs are generated/fake
+
+### **Development State**
+- ⚠️ **Console Logging**: Extensive debug logging throughout codebase
+- ⚠️ **TODO Comments**: Several development reminders and future tasks
+- ⚠️ **Hardcoded Values**: Some mock data and configurations
+- ⚠️ **Limited Error Handling**: Basic error states implemented
+
+---
+
+## Next Steps Recommendations
+
+### **Immediate Development Priorities**
+
+#### **1. Complete Wallet Integration**
+```
+Priority: High
+Timeline: 1-2 weeks
+Tasks:
+- Implement full Wagmi integration in WalletConnectModal
+- Add real wallet connection error handling
+- Implement network switching functionality
+- Add wallet connection persistence across browser sessions
+- Test with multiple wallet providers (MetaMask, Trust Wallet, etc.)
+```
+
+#### **2. Backend Development**
+```
+Priority: High  
+Timeline: 4-6 weeks
+Tasks:
+- Deploy separate Node.js/Express backend server
+- Implement Aqua Node SDK integration for full verification methods
+- Replace localStorage with real database (PostgreSQL/MongoDB)
+- Add user authentication and management system
+- Implement real blockchain transaction handling
+```
+
+#### **3. Production Blockchain Integration**
+```
+Priority: Medium
+Timeline: 3-4 weeks
+Tasks:
+- Implement real notarization service
+- Deploy witness network integration
+- Add actual blockchain transaction handling
+- Integrate with real blockchain explorers
+- Add smart contract deployment for certificate tracking
+```
+
+#### **4. Enhanced Verification System**
+```
+Priority: Medium
+Timeline: 2-3 weeks
+Tasks:
+- Implement full Aqua Node SDK verification methods
+- Add cryptographic proof validation
+- Enhance certificate tampering detection
+- Add batch verification capabilities
+- Implement verification caching and optimization
+```
+
+### **Medium-term Enhancements**
+
+#### **5. Enterprise Features**
+```
+- Multi-tenant architecture for institutions
+- Advanced certificate templates and customization
+- Bulk certificate issuance tools
+- Administrative dashboards and analytics
+- API access for external integrations
+```
+
+#### **6. Security & Compliance**
+```
+- Implement real certificate authority integration
+- Add GDPR compliance features
+- Enhance security audit trail
+- Implement certificate revocation system
+- Add certificate expiration handling
+```
+
+### **Long-term Vision**
+
+#### **7. Production Deployment**
+```
+- Cloud deployment (AWS/Azure/GCP)
+- CDN integration for global performance
+- Load balancing and auto-scaling
+- Real-time monitoring and alerting
+- Comprehensive testing suite
+```
+
+#### **8. Ecosystem Integration**
+```
+- Integration with major learning platforms (Coursera, edX, etc.)
+- Employer verification portal
+- Mobile app development
+- Third-party API marketplace
+- Academic institution partnerships
+```
+
+---
+
+## Technical Architecture Summary
+
+### **Current Stack**
+- **Frontend**: React 19 + Vite + TailwindCSS
+- **State Management**: React Context + localStorage
+- **Wallet Integration**: Wagmi (partial)
+- **Cryptographic Operations**: Aqua SDK (browser version)
+- **Build System**: Vite with Hot Module Replacement
+- **Deployment**: Vercel configuration included
+
+### **Missing Production Components**
+- **Backend Server**: Node.js/Express API server
+- **Database**: PostgreSQL or MongoDB for persistent storage
+- **Authentication**: JWT or OAuth2 implementation
+- **Real Blockchain**: Smart contracts and blockchain integration
+- **Monitoring**: Logging, analytics, and error tracking
+- **Testing**: Unit, integration, and end-to-end test suites
+
+### **Development Workflow**
+1. **Local Development**: `npm run dev` starts Vite dev server
+2. **Building**: `npm run build` creates production build
+3. **Deployment**: Configured for Vercel deployment
+4. **Environment**: Single `.env` file for configuration
+
+---
+
+## Project Assessment
+
+### **Strengths**
+- ✅ **Professional UI/UX**: Clean, modern interface with excellent user experience
+- ✅ **Real SDK Integration**: Actual Aqua SDK usage for certificate signing
+- ✅ **Comprehensive Demo**: Shows complete certificate lifecycle
+- ✅ **Responsive Design**: Works well across devices and screen sizes
+- ✅ **Code Quality**: Well-structured React components and clean architecture
+- ✅ **Animation Polish**: Smooth transitions and professional interactions
+
+### **Areas for Improvement**
+- ⚠️ **Backend Missing**: No real server-side implementation
+- ⚠️ **Limited Verification**: Browser SDK constraints limit full verification
+- ⚠️ **Mock Services**: All blockchain operations are simulated
+- ⚠️ **Storage Limitations**: localStorage not suitable for production
+- ⚠️ **Wallet Integration**: Partial implementation needs completion
+
+### **Production Readiness**
+**Current State**: High-quality prototype/demo with real SDK integration
+**Production Gap**: Requires backend development, real blockchain integration, and database implementation
+
+**Estimated Timeline to Production**: 8-12 weeks with dedicated development team
+
+---
+
+## Conclusion
+
+AquaCert represents a sophisticated and well-executed demonstration of blockchain-based certificate verification using the Aqua SDK. The frontend application showcases professional design standards, comprehensive user workflows, and real cryptographic integration. While currently limited to frontend-only implementation with mock backend services, the codebase provides an excellent foundation for building a production-ready certificate verification system.
+
+The project successfully demonstrates the potential of Aqua SDK integration while highlighting both the capabilities and current limitations of browser-based cryptographic operations. The professional UI/UX and comprehensive feature set make this an ideal showcase for stakeholders and a solid starting point for production development.
+
+**Recommendation**: Proceed with backend development and real blockchain integration to transform this impressive prototype into a production-ready platform.

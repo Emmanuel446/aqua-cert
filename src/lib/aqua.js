@@ -73,7 +73,9 @@ class AquaCertSDK {
       console.log("🚀 Generating certificate with Aqua SDK...");
 
       const fileObject = {
-        fileName: `${certificateData.recipientName.replace(/\s+/g, '_')}_certificate.json`,
+        fileName: certificateData.fileName 
+          ? certificateData.fileName.replace(/\.(pdf|jpg|jpeg|png)$/i, '.json')
+          : `${(certificateData.recipientName || 'uploaded_certificate').replace(/\s+/g, '_')}_certificate.json`,
         fileContent: JSON.stringify(certificateData, null, 2),
       };
 

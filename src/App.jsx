@@ -13,6 +13,7 @@ import VerifyCertificate from './pages/VerifyCertificate';
 import About from './pages/About';
 import DashboardLayout from './components/DashboardLayout';
 import GenerateCertificate from './pages/Dashboard/GenerateCertificate';
+import UploadCertificate from './pages/Dashboard/UploadCertificate';
 import ViewCertificates from './pages/Dashboard/ViewCertificates';
 import Profile from './pages/Dashboard/Profile';
 import History from './pages/Dashboard/History';
@@ -51,6 +52,7 @@ function App() {
 
                 {/* Dashboard routes - NO Navbar */}
                 <Route path="/dashboard" element={<DashboardLayout />}>
+                  <Route path="upload" element={<UploadCertificate />} />
                   <Route path="generate" element={<GenerateCertificate />} />
                   <Route path="certificates" element={<ViewCertificates />} />
                   <Route path="profile" element={<Profile />} />

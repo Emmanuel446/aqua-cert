@@ -87,6 +87,13 @@ export async function verifyCertificate(certificateId) {
         program: certificate.program,
         issueDate: certificate.issueDate,
         issuedBy: certificate.issuedBy,
+        
+        // ⚠️ ADD THESE 5 LINES:
+        type: certificate.type,
+        certificateType: certificate.certificateType,
+        uploadedFile: certificate.uploadedFile,
+        notarization: certificate.notarization,
+        witness: certificate.witness,
       },
       metadata: {
         signedAt: certificate.signedAt,

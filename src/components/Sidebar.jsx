@@ -10,6 +10,7 @@ import {
   HelpCircle,
   ChevronLeft,
   Shield,
+  Upload, // ← ADDED THIS IMPORT
 } from 'lucide-react'
 
 const Sidebar = ({ isOpen, onToggle, isMobile }) => {
@@ -17,6 +18,7 @@ const Sidebar = ({ isOpen, onToggle, isMobile }) => {
 
   const navItems = [
     { path: '/dashboard/generate', label: 'Generate Certificate', icon: FileText },
+    { path: '/dashboard/upload', label: 'Upload Certificate', icon: Upload }, // ← ADDED THIS LINE
     { path: '/dashboard/certificates', label: 'View Certificates', icon: FolderOpen },
     { path: '/dashboard/profile', label: 'Profile', icon: User },
     { path: '/dashboard/history', label: 'History', icon: Clock },
