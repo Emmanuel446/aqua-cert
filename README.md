@@ -1,6 +1,7 @@
 # AquaCert — Verifiable Digital Certificates
 AquaCert is a web application that enables institutions and organizations to upload, issue or generate and verify tamper-proof digital certificates using the Aqua SDK.
 It brings: trust, transparency, and authenticity to digital credentials — ensuring every certificate is cryptographically signed,   traceable, and verifiable.
+link: https://aqua-cert.vercel.app/
 
 # Overview
 AquaCert is integrated with the Aqua JavaScript SDK (Web) for both certificate signing and verification, other features like notarization and witnessing were added but it was simulated
