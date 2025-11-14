@@ -1,4 +1,9 @@
+# Aqua Bounty Challenges Completed
+- Build an App using the AquaSDK ( built AquaCert )
+- Improve the UX of the Aqua Website, ( Built a redesign of the official Aqua website )
+
 # AquaCert — Verifiable Digital Certificates
+
 AquaCert is a web application that enables institutions and organizations to upload, issue or generate and verify tamper-proof digital certificates using the Aqua SDK.
 It brings: trust, transparency, and authenticity to digital credentials — ensuring every certificate is cryptographically signed,   traceable, and verifiable.
 link: https://aqua-cert.vercel.app/
@@ -100,6 +105,12 @@ Built With
 - TailwindCSS — Clean, responsive styling
 - Aqua SDK (Web) — Cryptographic signing and verification
 - LocalStorage — Temporary proof persistence
+
+2 Aqua Protocol Official Website Redesign
+
+
+
+- Link: https://aqua-protocol-redesign.vercel.app/
 
 # Team Members
 - Samuel Obarine Ngekeda — Project Manager
