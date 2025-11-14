@@ -106,11 +106,53 @@ Built With
 - Aqua SDK (Web) — Cryptographic signing and verification
 - LocalStorage — Temporary proof persistence
 
-2 Aqua Protocol Official Website Redesign
+# Aqua Protocol Official Website Redesign
+
+As part of this BUIDL, our team delivered a modern, clearer, and more user-friendly redesign of the Aqua official website.
+The goal: remove confusion, improve onboarding, and make Aqua’s value instantly understandable to both developers and non-technical users.
+
+- Improvements we Made
+
+1. Clearer Value Proposition
+
+Rewrote the hero section and core messaging so visitors immediately understand what Aqua does and why it matters.
+
+Removed overly technical jargon that previously caused confusion.
 
 
+2. Full Responsive Redesign
 
-- Link: https://aqua-protocol-redesign.vercel.app/
+Implemented a mobile-first layout that scales cleanly from 375px → 4K screens.
+
+Improved spacing, typography, and grid structure for consistent readability.
+
+
+3. UI/UX Enhancements
+
+Reworked navigation and content flow to reduce cognitive load.
+
+Improved section hierarchy so features, docs, and use cases are easier to discover.
+
+
+4. Performance & Interaction Improvements
+
+Optimized layout structure for smoother rendering and less layout shift.
+
+Enhanced button/interaction responsiveness across devices.
+
+
+5. Cleaner Visual System
+
+Introduced a more consistent color system aligned with Aqua’s brand.
+
+Improved iconography, spacing, and component consistency.
+
+
+6. Documentation Readability Upgrade
+
+Reformatted several sections for clarity
+
+- Link to redesign website: https://aqua-protocol-redesign.vercel.app/
 
 # Team Members
 - Samuel Obarine Ngekeda — Project Manager
